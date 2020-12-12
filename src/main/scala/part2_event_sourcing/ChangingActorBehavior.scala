@@ -36,14 +36,14 @@ object ChangingActorBehavior extends App {
     override def receive: Receive = happyReceive
 
     def happyReceive: Receive = {
-      case Food(VEGETABLE) => context.become(sadReceive) // change my receive handler
-      case Food(CHOCOLATE) =>
+      case Food(VEGETABLE) => context.become(sadReceive, discardOld = false) // change my receive handler
+      case Food(CHOCOLATE) => // context.become(happyReceive, discardOld = false)
       case Ask(_)          => sender() ! KidAccept
     }
 
     def sadReceive: Receive = {
-      case Food(VEGETABLE) =>
-      case Food(CHOCOLATE) => context.become(happyReceive) // change my receive handler
+      case Food(VEGETABLE) => context.become(sadReceive, discardOld = false)
+      case Food(CHOCOLATE) => context.unbecome() // change my receive handler
       case Ask(_)          => sender() ! KidReject
     }
   }
@@ -64,6 +64,9 @@ object ChangingActorBehavior extends App {
       case MomStart(kidRef) =>
         // test our interaction
         kidRef ! Food(VEGETABLE)
+        kidRef ! Food(VEGETABLE)
+        kidRef ! Food(CHOCOLATE)
+//        kidRef ! Food(CHOCOLATE)
         kidRef ! Ask("do you want to play?")
       case KidAccept => println(s"Yeah, my kid is happy!")
       case KidReject => println(s"My kid is sad, but healthy!")
@@ -76,7 +79,31 @@ object ChangingActorBehavior extends App {
   val mom = system.actorOf(Props[Mom], "momActor")
 
   import Mom._
-  mom ! MomStart(kid)
+//  mom ! MomStart(kid)
+//  mom ! MomStart(statelessKid) // the same behavior
+  /*
+  Food(veg) -> stack.push(sadReceive)
+  Food(chocca) -> stack.push(happyReceive) //become.happyReceive
+
+  Stack:
+  1. happyReceive
+  2. sadReceive
+  3. happyReceive
+   */
+
+  /*
+  new behavior:
+  Food(veg) -> stack.push(sadReceive) 1. happy --> 1.sad 2.happy
+  Food(veg) -> stack.push(sadReceive) 1.sad 2. happy --> 1.sad 2.sad 3.happy
+  Food(choco) -> stack.push(happyReceive) //become.happyReceive  - replaced by unbecome : 1.sad 2.sad 3.happy --> 1.sad 2.happy
+  Food(choco) -> stack.push(happyReceive) 1.sad 2.happy --> 1.happy
+
+
+  Stack:
+  1. sadReceive
+  2. sadReceive
+  3. lessSad
+   */
   mom ! MomStart(statelessKid)
 
 }
