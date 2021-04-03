@@ -4,10 +4,9 @@ import akka.actor.ActorSystem
 import akka.actor.Props
 import com.typesafe.config.ConfigFactory
 
-object LocalStores extends App {
-
-  val localStoreActorSystem = ActorSystem("localStoreActorSystem", ConfigFactory.load().getConfig("localStores"))
-  val persistentActor = localStoreActorSystem.actorOf(Props[SimplePersistentActor], "persistentActor")
+object Postgres extends App {
+  val postgresStoreActorSystem = ActorSystem("postgresStoreActorSystem", ConfigFactory.load().getConfig("postgresDemo"))
+  val persistentActor = postgresStoreActorSystem.actorOf(Props[SimplePersistentActor], "persistentActor")
 
   for (i <- 1 to 10) {
     persistentActor ! s"I love Akka [${i}]"
