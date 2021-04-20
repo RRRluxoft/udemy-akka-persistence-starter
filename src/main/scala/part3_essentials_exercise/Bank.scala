@@ -30,7 +30,7 @@ object Bank extends App {
           funds += amount
           sender() ! TransactionSuccess(s"You have a luck. Now $funds 'USD'")
         }
-      case Withdraw(amount) if (amount > funds) => sender() ! TransactionFailure(s"Not enough money! Available $funds USD")
+      case Withdraw(amount) if (amount > funds) => sender() ! TransactionFailure(s"$amount Not enough money! Available $funds USD")
       case Withdraw(amount) =>
         funds -= amount
         sender() ! TransactionSuccess(s"So cool . Now ${funds} USD")

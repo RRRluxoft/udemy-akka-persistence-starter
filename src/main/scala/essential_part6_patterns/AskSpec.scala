@@ -65,6 +65,7 @@ object AskSpec {
   //
 
   case class Read(key: String)
+  case class Delete(key: String)
   case class Write(key: String, value: String)
 
   class KVActor extends Actor with ActorLogging {

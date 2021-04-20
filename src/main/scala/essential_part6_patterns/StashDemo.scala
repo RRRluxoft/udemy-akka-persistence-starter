@@ -78,5 +78,6 @@ object StashDemo extends App {
   resourceActor ! Write("I got stash") // write
   resourceActor ! Close // closing and unstashAll; and Open again cause receive Open ??? !!!
   resourceActor ! Read // cant handle and stash - wrong : already open and 'I've Read ... msg.'
+  system.stop(resourceActor)
 
 }

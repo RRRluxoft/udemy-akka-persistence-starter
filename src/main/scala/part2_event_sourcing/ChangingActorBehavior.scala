@@ -142,7 +142,7 @@ object ChangingActorBehavior extends App {
   counterActor ! Print
 
   /*
-  Ex2 - a simplified voiting system
+  Ex2 - a simplified voting system
    */
   case class Vote(candidate: String)
   case object VoteStatusRequest

@@ -7,6 +7,7 @@ import akka.actor.ActorSystem
 import akka.actor.Cancellable
 import akka.actor.FSM
 import akka.actor.Props
+import akka.persistence.PersistentActor
 import akka.testkit.ImplicitSender
 import akka.testkit.TestKit
 import org.scalatest.BeforeAndAfterAll
